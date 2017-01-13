@@ -1,0 +1,12 @@
+[submodule "seaneshbaugh"]
+	path = seaneshbaugh
+	url = git@github.com:seaneshbaugh/portfolio.git
+[submodule "conneythecorgi"]
+	path = conneythecorgi
+	url = git@github.com:seaneshbaugh/corgiblog.git
+[submodule "cavesofkoilos"]
+	path = cavesofkoilos
+	url = git@github.com:seaneshbaugh/card_tracker.git
+[submodule "cedarealty"]
+	path = cedarealty
+	url = git@github.com:seaneshbaugh/ceda-realty.git

@@ -63,7 +63,7 @@ services:
       - ./seaneshbaugh:/app
     command: [bundle, exec, unicorn, -c, config/unicorn/development-docker.rb, -E, development]
 
-  seaneshbaugh:
+  conneythecorgi:
     environment:
       - VIRTUAL_HOST=conneythecorgi.dev
       - BUNDLE_PATH=/gems/conneythecorgi
