@@ -1,0 +1,112 @@
+version: '2'
+
+services:
+  gemsbox:
+    image: busybox
+    volumes:
+      - /gems
+
+  postgresdata:
+    image: busybox
+    volumes:
+      - /var/lib/postgresql/data
+
+  mysqldata:
+    image: busybox
+    volumes:
+      - /var/lib/mysql
+
+  postgres:
+    extends:
+      service: container
+      file: common.yml
+    environment:
+      - POSTGRES_USER=cart
+      - POSTGRES_PASSWORD=cart
+      - POSTGRES_DB=book-cart_development
+    image: postgres
+    volumes_from:
+      - postgresdata
+    ports:
+      - "5432:5432"
+
+  mysql:
+    extends:
+      service: container
+      file: common.yml
+    build: ./mysql
+    volumes_from:
+      - mysqldata
+    ports:
+      - "3306:3306"
+
+  redis:
+    extends:
+      service: container
+      file: common.yml
+    image: redis
+    ports:
+      - "6379:6379"
+
+  seaneshbaugh:
+    environment:
+      - VIRTUAL_HOST=seaneshbaugh.dev
+      - BUNDLE_PATH=/gems/seaneshbaugh
+    extends:
+      service: webapp
+      file: common.yml
+    build: ./seaneshbaugh
+    volumes_from:
+      - gemsbox
+      - ssh-agent
+    volumes:
+      - ./seaneshbaugh:/app
+    command: [bundle, exec, unicorn, -c, config/unicorn/development-docker.rb, -E, development]
+
+  seaneshbaugh:
+    environment:
+      - VIRTUAL_HOST=conneythecorgi.dev
+      - BUNDLE_PATH=/gems/conneythecorgi
+    extends:
+      service: webapp
+      file: common.yml
+    build: ./conneythecorgi
+    volumes_from:
+      - gemsbox
+      - ssh-agent
+    volumes:
+      - ./conneythecorgi:/app
+    command: [bundle, exec, unicorn, -c, config/unicorn/development-docker.rb, -E, development]
+
+  cavesofkoilos:
+    environment:
+      - VIRTUAL_HOST=cavesofkoilos.dev
+      - BUNDLE_PATH=/gems/cavesofkoilos
+    extends:
+      service: webapp
+      file: common.yml
+    build: ./cavesofkoilos
+    volumes_from:
+      - gemsbox
+      - ssh-agent
+    volumes:
+      - ./cavesofkoilos:/app
+    command: [bundle, exec, unicorn, -c, config/unicorn/development-docker.rb, -E, development]
+
+  cedarealty:
+    environment:
+      - VIRTUAL_HOST=cedarealty.dev
+      - BUNDLE_PATH=/gems/cedarealty
+    extends:
+      service: webapp
+      file: common.yml
+    build: ./cedarealty
+    volumes_from:
+      - gemsbox
+      - ssh-agent
+    volumes:
+      - ./cedarealty:/app
+    command: [bundle, exec, unicorn, -c, config/unicorn/development-docker.rb, -E, development]
+
+  ssh-agent:
+    image: quay.io/bookshout/ssh-agent:good
